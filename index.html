@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marvel Zone</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #005050;
+        }
+        .search-container {
+            padding: 1px;
+            background-color: #25d366;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1001;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .search-container input {
+            padding: 1px;
+            width: 33%;
+            max-width: 400px;
+        }
+        .video-player {
+            text-align: center;
+            margin: 20px;
+            padding: 10px;
+            border: 2px solid #333;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 33px;
+            z-index: 1000;
+            overflow: hidden;
+        }
+        .video-player iframe {
+            width: 100%;
+            max-width: 640px;
+            height: 360px;
+            border: none;
+            background-color: #000;
+        }
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 4px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 4px solid #3498db;
+            width: 30px;
+            height: 30px;
+            animation: spin 2s linear infinite;
+            display: none;
+        }
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        .video-title {
+            margin-top: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+        .thumbnails {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px;
+        }
+        .thumbnail {
+            margin: 12px;
+            cursor: pointer;
+            text-align: center;
+            width: 400px;
+            border: 2px solid #333;
+            background-color: #fff;
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .thumbnail:hover {
+            transform: scale(1.05);
+        }
+        .thumbnail img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+        .thumbnail p {
+            margin: 5px 0 0;
+            text-align: center;
+        }
+        .thumbnail .download-link {
+            margin-top: 10px;
+            font-size: 17px;
+            text-align: center;
+            border-top: 4px solid #333;
+            padding-top: 5px;
+        }
+        .download-link a {
+            color: red;
+            text-decoration: none;
+        }
+        .ad-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            height: 90px;
+            width: 728px;
+            background-color: #ccc;
+            color: #333;
+            font-size: 24px;
+            text-align: center;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .pagination button {
+            margin: 0 5px;
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        .pagination button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        @media (max-width: 768px) {
+            .video-player iframe {
+                height: 200px;
+            }
+            .thumbnail {
+                width: 320px;
+            }
+            .ad-container {
+                width: 100%;
+                height: auto;
+            }
+        }
+        @media (max-width: 480px) {
+            .video-player iframe {
+                height: 180px;
+            }
+            .thumbnail {
+                width: 240px;
+            }
+            .thumbnail img {
+                height: auto;
+            }
+        }
+        .whatsapp-icon {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 5px;
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .whatsapp-icon img {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+        }
+        /* Play button styling */
+        .play-button {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            border: 2px solid #fff;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            
+        }
+        .play-button::before {
+            content: '';
+            display: inline-block;
+            margin-left: 5px;
+            border-style: solid;
+            border-width: 10px 0 10px 15px;
+            border-color: transparent transparent transparent white;
+        }
+    </style>
+    <script type='text/javascript' src='//pl23960486.highratecpm.com/45/cd/e4/45cde4e4554621780bc738b044a42da9.js'></script>
+</head>
+<body>
+
+<div class="search-container">
+    <input type="text" id="searchInput" placeholder="Search Movies..." onkeyup="searchMovies()">
+    <a class="whatsapp-icon" href="https://wa.me/923160829141">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
+        Request Movie
+    </a>
+</div>
+
+<div class="video-player">
+    <div id="loading" class="loading"></div>
+    <iframe id="mainPlayer" src="" allow="autoplay" frameborder="0" allowfullscreen></iframe>
+    <div id="videoTitle" class="video-title"></div>
+</div>
+
+<iframe data-aa='2322695' src='https://ad.a-ads.com/2322695?size=728x90' style='width:350px; height:90px; border:0px; padding:0; overflow:hidden; background-color: transparent;'></iframe>
+
+<div class="thumbnails" id="thumbnailsContainer"></div>
+
+<div class="pagination">
+    <button id="prevPage" onclick="changePage(-1)" disabled>Previous</button>
+    <button id="nextPage" onclick="changePage(1)">Next</button>
+</div>
+
+<h3 style="text-align: center;"><a href="https://datafree32.blogspot.com/2024/07/download-all-movies.html" target="_blank"><span style="color: white;">Download All Movies</span></a></h3>
+
+<iframe data-aa='2322695' src='https://ad.a-ads.com/2322695?size=728x90' style='width:350px; height:90px; border:0px; padding:0; overflow:hidden; background-color: transparent;'></iframe>
+<div class="ad-container">
+     <script async="async" data-cfasync="false" src="//pl23971101.highratecpm.com/981e580140c693856f6c9101c27d4f71/invoke.js"></script>
+     <div id="container-981e580140c693856f6c9101c27d4f71"></div>
+     </div>
+<script>
+    const thumbnailsData = [
+        { url: 'https://streamtape.com/e/aG8Wd3lemrtxkP8/Heart_of_Stone_(2023)_ORG_Hindi_Dual_Audio_720p_NF', title: 'Heart of Stone (2023) HD In Hindi', img: 'https://m.media-amazon.com/images/M/MV5BMTJhYjI1N2ItM2E4MC00ZmYzLTk2YzYtNTE5YTM1MDU0NjRiXkEyXkFqcGdeQXVyMTMxNjYyMTgw._V1_FMjpg_UY711_.jpg' },
+        { url: 'https://drive.google.com/file/d/18Q_8UpJWsrmgW8ESjwJeMgVWBTC-Nh4p/preview', title: 'Kingdom of the Planet of the Apes (2024)', img: 'https://m.media-amazon.com/images/M/MV5BZGI4NTEwNTAtZDcwMi00MDkxLTg1OGYtNTZmMzE3ZDljNzVlXkEyXkFqcGdeQXVyMTEyMjM2NDc2._V1_FMjpg_UY711_.jpg' },
+        { url: 'https://drive.google.com/file/d/14xmjwafod7uje2oDlqJWKz-BCtBEL5un/preview', title: 'Iron Man 1 (2008) Full HD Movie', img: 'https://m.media-amazon.com/images/M/MV5BMTczNTI2ODUwOF5BMl5BanBnXkFtZTcwMTU0NTIzMw@@._V1_FMjpg_UY711_.jpg' },
+        
+        // Add more movie data here
+    ];
+
+    const thumbnailsPerPage = 11;
+    let currentPage = 1;
+    let filteredThumbnails = thumbnailsData;
+
+    function displayThumbnails() {
+        const container = document.getElementById('thumbnailsContainer');
+        container.innerHTML = '';
+        const start = (currentPage - 1) * thumbnailsPerPage;
+        const end = start + thumbnailsPerPage;
+        const thumbnailsToShow = filteredThumbnails.slice(start, end);
+
+        thumbnailsToShow.forEach((thumbnail, index) => {
+            const div = document.createElement('div');
+            div.className = 'thumbnail';
+            div.onclick = () => playVideo(thumbnail.url, thumbnail.title);
+            div.innerHTML = `
+                <img src="${thumbnail.img}" alt="${thumbnail.title}">
+                <div class="play-button"></div>
+                <p>${thumbnail.title}</p>
+                <div class="download-link">
+                    <a href="https://www.highratecpm.com/uz50mzu3f?key=efec633d14ae4a27a4a0aa1aa41c9c7e" target="_blank" onclick="event.stopPropagation();">Download</a>
+                </div>
+            `;
+            container.appendChild(div);
+        });
+
+        document.getElementById('prevPage').disabled = currentPage === 1;
+        document.getElementById('nextPage').disabled = end >= filteredThumbnails.length;
+    }
+
+    function changePage(direction) {
+        currentPage += direction;
+        displayThumbnails();
+    }
+
+    function playVideo(url, title) {
+        const player = document.getElementById('mainPlayer');
+        const loading = document.getElementById('loading');
+        player.src = '';
+        loading.style.display = 'block';
+
+        incrementViewCount(url);
+
+        setTimeout(() => {
+            player.src = url;
+            loading.style.display = 'none';
+        }, 2000);
+
+        document.getElementById('videoTitle').textContent = title;
+    }
+
+    function searchMovies() {
+        const searchInput = document.getElementById('searchInput').value.toLowerCase();
+        filteredThumbnails = thumbnailsData.filter(thumbnail =>
+            thumbnail.title.toLowerCase().includes(searchInput)
+        );
+        currentPage = 1;
+        displayThumbnails();
+    }
+
+    function incrementViewCount(url) {
+        let viewCount = localStorage.getItem(url) || 0;
+        viewCount++;
+        localStorage.setItem(url, viewCount);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        displayThumbnails();
+    });
+</script>
+<script type='text/javascript' src='//pl23971147.highratecpm.com/44/b4/d5/44b4d574a1d80f33a4e7c99ba0ac3369.js'></script>
+</body>
+</html>
+
