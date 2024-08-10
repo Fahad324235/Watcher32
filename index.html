@@ -202,36 +202,66 @@
             border-color: transparent transparent transparent white;
         }
 
-     #iframe-container {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 350px;
-            height: 500px;
-            background-color: rgba(0, 0, 0, 0.7);
-            z-index: 2000;
-            display: none;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        #iframe-container iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        #iframe-container .close-button {
-            position: absolute;
-            top: 1px;
-            right: 10px;
-            cursor: pointer;
-            font-size: 40px;
-            color: #fff;
-        }
-      
+  /* Overlay styling */
+  .overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1002;
+  }
+  
+  .overlay-content {
+  background: #fff;
+  padding: 1px;
+  border-radius: 1px;
+  text-align: center;
+  position: relative;
+  width: 90%;
+  height: 90%;
+  }
+  
+  .overlay-content iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  }
+  
+  .close-btn {
+  display: none; /* Initially hide the button */
+  margin: 1px auto 0;
+  padding: 15px;
+  background: #f00;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  bottom: 450px; /* Adjust position as needed */
+  left: 60%;
+  transform: translateX(-50%);
+  border-radius: 2%; /* Make the button round */
+  width: 160px; /* Adjust width */
+  height: 50px; /* Adjust height */
+  text-align: center;
+  line-height: 30px; /* Center text vertically */
+  animation: showButton 0s forwards;
+  }
+  
+  .close-btn::before {
+  content: 'X'; /* Add 'X' text inside the button */
+  font-size: 24px;
+  }
+  
+  @keyframes showButton {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+  }
+  
     </style>
 </head>
 <body>
@@ -261,10 +291,14 @@
 
   <iframe data-aa='2322695' src='https://ad.a-ads.com/2322695?size=728x90' style='width:350px; height:90px; border:0px; padding:0; overflow:hidden; background-color: transparent;'></iframe>
 
-  <div id="iframe-container">
-    <span class="close-button" onclick="closeIFrame()">×</span>
-    <iframe src=""></iframe>
-</div>
+ <!-- Overlay -->
+ <div id="overlay" class="overlay">
+ <div class="overlay-content">
+ <iframe id="overlayIframe" src="" frameborder="0" allowfullscreen></iframe>
+ <button class="close-btn" onclick="closeOverlay()">Close</button>
+ </div>
+ </div>
+ 
   
 <script>
     const thumbnailsData = [
@@ -327,7 +361,7 @@
         setTimeout(() => {
             player.src = url;
             loading.style.display = 'none';
-        }, 2000);
+        }, 1000);
 
         document.getElementById('videoTitle').textContent = title;
     }
@@ -351,22 +385,34 @@
         displayThumbnails();
     });
 
-function openIFrame() {
-        const iframeContainer = document.getElementById('iframe-container');
-        const iframe = iframeContainer.querySelector('iframe');
-        iframe.src = 'https://www.highratecpm.com/uz50mzu3f?key=efec633d14ae4a27a4a0aa1aa41c9c7e';
-        iframeContainer.style.display = 'block';
-    }
+// Function to open the overlay with a specific link
+function openOverlay(url) {
+    document.getElementById('overlayIframe').src = url;
+    document.getElementById('overlay').style.display = 'flex';
+    // Show the close button after 10 seconds
+    setTimeout(() => {
+        document.querySelector('.close-btn').style.display = 'block';
+        document.querySelector('.close-btn').style.animation = 'showButton 1s forwards'; // Adjust animation timing if needed
+    }, 10000); // 5 seconds delay
+}
 
-    function closeIFrame() {
-        const iframeContainer = document.getElementById('iframe-container');
-        iframeContainer.style.display = 'none';
-        const iframe = iframeContainer.querySelector('iframe');
-        iframe.src = '';
-    }
+// Function to close the overlay
+function closeOverlay() {
+    document.getElementById('overlay').style.display = 'none';
+    document.getElementById('overlayIframe').src = ''; // Stop the video
+}
+
+// Automatically open the overlay with a specific URL when the page loads
+window.onload = function() {
+    setTimeout(() => {
+        openOverlay('https://www.highratecpm.com/uyz2avfp?key=af05da8c47fc0d441624224a14c722a6'); // Replace with your URL
+    }, 1000); // Adjust delay as needed
+};
+
   
 </script>
   <script type='text/javascript' src='//pl23971147.highratecpm.com/44/b4/d5/44b4d574a1d80f33a4e7c99ba0ac3369.js'></script>
 </body>
 </html>
+
 
